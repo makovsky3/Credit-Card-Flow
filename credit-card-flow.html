@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Card Payment Flow</title>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        #root {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .flow-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .step {
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+        .step circle {
+            transition: fill 0.3s ease;
+        }
+        .step text {
+            font-size: 14px;
+            fill: #333;
+        }
+        .description {
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const steps = [
+            { id: 'customer', x: 50, y: 150, label: 'Customer', description: 'Customer initiates a purchase with their credit card.' },
+            { id: 'merchant', x: 200, y: 150, label: 'Merchant', description: 'Merchant's point-of-sale system or payment gateway processes the card information.' },
+            { id: 'acquirer', x: 350, y: 150, label: 'Acquirer', description: 'Acquiring bank receives the transaction details and forwards them to the card network.' },
+            { id: 'network', x: 500, y: 150, label: 'Card Network', description: 'Card network (e.g., Visa, Mastercard) routes the transaction to the issuing bank.' },
+            { id: 'issuer', x: 650, y: 150, label: 'Issuer', description: 'Issuing bank approves or declines the transaction based on the customer's account.' },
+            { id: 'settlement', x: 350, y: 50, label: 'Settlement', description: 'Funds are transferred from the issuing bank to the acquiring bank, and then to the merchant's account.' }
+        ];
+
+        function CreditCardFlow() {
+            const [currentStep, setCurrentStep] = React.useState(0);
+
+            const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+            const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
+
+            return (
+                <div>
+                    <h1>Credit Card Payment Flow</h1>
+                    <div className="flow-container">
+                        <svg width="100%" height="100%" viewBox="0 0 700 200">
+                            {steps.map((step, index) => (
+                                <g key={step.id} className="step">
+                                    <circle 
+                                        cx={step.x} 
+                                        cy={step.y} 
+                                        r="30" 
+                                        fill={index <= currentStep ? "#4CAF50" : "#ddd"}
+                                    />
+                                    <text x={step.x} y={step.y + 45} textAnchor="middle">{step.label}</text>
+                                </g>
+                            ))}
+                            <path d="M80 150 H620" stroke="#ddd" strokeWidth="2" fill="none" />
+                            <path d="M350 150 V50" stroke="#ddd" strokeWidth="2" fill="none" />
+                        </svg>
+                    </div>
+                    <div className="description">
+                        <h3>Step {currentStep + 1}: {steps[currentStep].label}</h3>
+                        <p>{steps[currentStep].description}</p>
+                    </div>
+                    <div className="button-container">
+                        <button onClick={prevStep} disabled={currentStep === 0}>Previous</button>
+                        <button onClick={nextStep} disabled={currentStep === steps.length - 1}>Next</button>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<CreditCardFlow />, document.getElementById('root'));
+    </script>
+</body>
+</html>
