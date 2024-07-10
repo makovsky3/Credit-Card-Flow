@@ -67,7 +67,10 @@
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <!-- React component will be rendered here -->
+    </div>
     <script type="text/babel">
         const steps = [
             { id: 'customer', x: 50, y: 150, label: 'Customer', description: 'Customer initiates a purchase with their credit card.' },
@@ -116,7 +119,12 @@
             );
         }
 
-        ReactDOM.render(<CreditCardFlow />, document.getElementById('root'));
+        try {
+            ReactDOM.render(<CreditCardFlow />, document.getElementById('root'));
+        } catch (error) {
+            console.error('Error rendering React component:', error);
+            document.getElementById('root').innerHTML = '<p>An error occurred while loading the Credit Card Flow. Please check the console for more details.</p>';
+        }
     </script>
 </body>
 </html>
